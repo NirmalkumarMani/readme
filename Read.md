@@ -1,0 +1,143 @@
+# Session Tracking
+** Session simply means a particular interval of time.
+Session Tracking is a way to maintain state (data) of an user. It is also known as session management in servlet.**
+
+# Why use Session Tracking?
+** To recognize the user It is used to recognize the particular user.**
+
+# Session Tracking Techniques:
+** There are four techniques used in Session tracking:
+
+1.Cookies
+2.Hidden Form Field
+3.URL Rewriting
+4.HttpSession **
+
+# Cookies in Servlet
+** javax.servlet.http.Cookie class provides the functionality of using cookies. It provides a lot of useful methods for cookies.
+ A cookie is a small piece of information that is persisted between the multiple client requests.
+A cookie has a name, a single value, and optional attributes such as a comment, path and domain qualifiers, a maximum age, and a version number.**
+# How Cookie works?
+** By default, each request is considered as a new request. In cookies technique, we add cookie with response from the servlet. So cookie is stored in the cache of the browser. After that if request is sent by the user, cookie is added with request by default. Thus, we recognize the user as the old user.**
+# Types of Cookie
+** There are 2 types of cookies in servlets.
+1.Non-persistent cookie
+2.Persistent cookie **
+# Non-persistent cookie
+** It is valid for single session only. It is removed each time when user closes the browser.**
+# Persistent cookie
+** It is valid for multiple session . It is not removed each time when user closes the browser. It is removed only if user logout or signout.**
+# Advantage of Cookies:
+**1.Simplest technique of maintaining the state.
+2.Cookies are maintained at client side.**
+# Disadvantage of Cookies:
+**1.It will not work if cookie is disabled from the browser.
+2.Only textual information can be set in Cookie object.**
+#How to create Cookie?
+ ```
+Cookie ck=new Cookie("user","sonoo jaiswal");
+response.addCookie(ck);  
+
+```
+# How to delete Cookie?
+```
+Cookie ck=new Cookie("user","");  
+ck.setMaxAge(0);
+response.addCookie(ck); 
+
+```
+# How to get Cookies?
+```
+Cookie ck[]=request.getCookies();  
+for(int i=0;i<ck.length;i++){  
+ out.print("<br>"+ck[i].getName()+" "+ck[i].getValue());
+}  
+
+```
+# Hidden Form Field:
+** In case of Hidden Form Field a hidden (invisible) textfield is used for maintaining the state of an user.
+
+In such case, we store the information in the hidden field and get it from another servlet. This approach is better if we have to submit form in all the pages and we don't want to depend on the browser.
+
+Let's see the code to store value in hidden field.
+ <input type="hidden" name="uname" value="Vimal Jaiswal"> **
+# application of hidden form field
+ **It is widely used in comment form of a website. 
+ In such case, we store page id or page name in the hidden field so that each page can be uniquely identified.**
+# Advantage of Hidden Form Field
+ ** 1.It will always work whether cookie is disabled or not.**
+# Disadvantage of Hidden Form Field:
+**
+1.It is maintained at server side.
+2.Extra form submission is required on each pages.
+3.Only textual information can be used.**
+# URL Rewriting:
+**In URL rewriting, we append a token or identifier to the URL of the next Servlet or the next resource. We can send parameter name/value pairs using the following format:
+
+url?name1=value1&name2=value2&??
+
+A name and a value is separated using an equal = sign, a parameter name/value pair is separated from another parameter using the ampersand(&). When the user clicks the hyperlink, the parameter name/value pairs will be passed to the server. From a Servlet, we can use getParameter() method to obtain a parameter value.**
+# Advantage of URL Rewriting
+**
+1.It will always work whether cookie is disabled or not (browser independent).
+2.Extra form submission is not required on each pages.**
+# Disadvantage of URL Rewriting
+**
+1.It will work only with links.
+2.It can send Only textual information.**
+# HttpSession interface:
+**In such case, container creates a session id for each user.The container uses this id to identify the particular user.An object of HttpSession can be used to perform two tasks:
+bind objects view and manipulate information about a session, such as the session identifier, creation time, and last accessed time.**
+# How to get the HttpSession object ?
+
+** The HttpServletRequest interface provides two methods to get the object of HttpSession:
+
+public HttpSession getSession():Returns the current session associated with this request, or if the request does not have a session, creates one.
+public HttpSession getSession(boolean create):Returns the current HttpSession associated with this request or, if there is no current session and create is true, returns a new session.**
+```
+public class FirstServlet extends HttpServlet {  
+  
+public void doGet(HttpServletRequest request, HttpServletResponse response){  
+        try{  
+  
+        response.setContentType("text/html");  
+        PrintWriter out = response.getWriter();  
+          
+        String n=request.getParameter("userName");  
+        out.print("Welcome "+n);  
+          
+        HttpSession session=request.getSession();  
+        session.setAttribute("uname",n);  
+  
+        out.print("<a href='servlet2'>visit</a>");  
+                  
+        out.close();  
+  
+                }catch(Exception e){System.out.println(e);}  
+    }  
+  
+}  
+
+
+```
+```
+public class SecondServlet extends HttpServlet {  
+  
+public void doGet(HttpServletRequest request, HttpServletResponse response)  
+        try{  
+  
+        response.setContentType("text/html");  
+        PrintWriter out = response.getWriter();  
+          
+        HttpSession session=request.getSession(false);  
+        String n=(String)session.getAttribute("uname");  
+        out.print("Hello "+n);  
+  
+        out.close();  
+  
+                }catch(Exception e){System.out.println(e);}  
+    }  
+      
+  
+}  
+```
