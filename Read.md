@@ -95,49 +95,83 @@ bind objects view and manipulate information about a session, such as the sessio
 public HttpSession getSession():Returns the current session associated with this request, or if the request does not have a session, creates one.
 public HttpSession getSession(boolean create):Returns the current HttpSession associated with this request or, if there is no current session and create is true, returns a new session.**
 ```
-public class FirstServlet extends HttpServlet {  
-  
-public void doGet(HttpServletRequest request, HttpServletResponse response){  
-        try{  
-  
-        response.setContentType("text/html");  
+# Example program
+```
+<form method="post" action="Login">
+  User: <input type="text" name="username" /><br/>
+  Password: <input type="text" name="password" ><br/>
+  <input type="submit" value="submit">
+</form>
+```
+```
+import java.io.*;  
+import javax.servlet.*;  
+import javax.servlet.http.*;  
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.annotation.WebServlet;  
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/Login")
+public class Login extends HttpServlet {  
+
+public void doPost(HttpServletRequest request, HttpServletResponse response)  
+        throws ServletException, IOException {  
+            try{
+    response.setContentType("text/html");
         PrintWriter out = response.getWriter();  
-          
-        String n=request.getParameter("userName");  
-        out.print("Welcome "+n);  
-          
-        HttpSession session=request.getSession();  
-        session.setAttribute("uname",n);  
+        String name = request.getParameter("username");
+        String pass = request.getParameter("password");
+        
+        if(pass.equals("1234"))
+        {
+            HttpSession session = request.getSession();
+            session.setAttribute("hello",name);
+            response.sendRedirect("Wel");
+            out.close();
+        }
+
+    else
+    {  
+        response.setContentType("text/html");
+        out.println("Sorry UserName  Password Error!");  
+       
+        }  
+    } 
+   catch(Exception e){System.out.println(e);}  
   
-        out.print("<a href='servlet2'>visit</a>");  
-                  
-        out.close();  
+}  
+}
+```
+```
+import java.io.*;  
+import javax.servlet.*;  
+import javax.servlet.http.*;  
   
-                }catch(Exception e){System.out.println(e);}  
-    }  
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.annotation.WebServlet; 
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/Wel")
+public class Wel extends HttpServlet {  
+  
+    public void doGet(HttpServletRequest request, HttpServletResponse response)  
+        throws ServletException, IOException {  
+            try{
+       response.setContentType("text/html");  
+    PrintWriter out = response.getWriter();  
+      HttpSession session=request.getSession(false);    
+   String name=(String)session.getAttribute("hello"); 
+    out.print("hello"+name);  
+        } 
+    catch(Exception e){System.out.println(e);}  
+ }
   
 }  
 
-
-```
-```
-public class SecondServlet extends HttpServlet {  
-  
-public void doGet(HttpServletRequest request, HttpServletResponse response)  
-        try{  
-  
-        response.setContentType("text/html");  
-        PrintWriter out = response.getWriter();  
-          
-        HttpSession session=request.getSession(false);  
-        String n=(String)session.getAttribute("uname");  
-        out.print("Hello "+n);  
-  
-        out.close();  
-  
-                }catch(Exception e){System.out.println(e);}  
-    }  
-      
-  
-}  
 ```
